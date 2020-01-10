@@ -1,0 +1,1 @@
+{"0":{"id":"11","branchType":0,"effect":[{"id":"2","estr":"ee"},{"id":"2","estr":"ee"},{"id":"2","estr":"ee"}]},"1":{"id":"12ss","branchType":1,"effect":[{"id":"2","estr":"ee"},{"id":"2","estr":"ee"},{"id":"3","estr":"ee"}]}}

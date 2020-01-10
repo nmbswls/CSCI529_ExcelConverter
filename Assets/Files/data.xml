@@ -1,0 +1,10 @@
+<root>
+    <c0>
+        <id type="string">a</id>
+        <branchType type="enum">a</branchType>
+        <effect type="class" MaxCount="3">
+          <id type="string"></id>
+          <estr></estr>
+        </effect>
+    </c0>
+</root>
