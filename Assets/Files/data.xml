@@ -1,10 +1,68 @@
 <root>
-    <c0>
-        <id type="string">a</id>
-        <branchType type="enum">a</branchType>
-        <effect type="class" MaxCount="3">
-          <id type="string"></id>
-          <estr></estr>
-        </effect>
-    </c0>
+  <CardAsset>
+    <CardId/>
+    <CardName/>
+    <CardDesp/>
+    <CatdImageName/>
+    <CardEffectDesp/>
+    <CardBackDesp/>
+    <CardType type="enum" etype="CardType"/>
+    <isCostAll type="bool"/>
+    <cost type="int"/>
+    <GemString/>
+    <StatusBonusType type="enum" etype="CardStatusBonus"/>
+    <StatusBonusNum/>
+    <BaseSkillId/>
+    <canUseFace type="bool"/>
+    <canUseBack type="bool"/>
+    
+   
+    <Effects type="class" MaxCount="3">
+      <effectType type="enum" etype="EffectType"/>
+      <Possibility/>
+      <effectString/>
+      <isAddBuff type="bool"/>
+      <buffInfo type="class" MaxCount="1">
+        <BuffType type="enum" etype="BuffType"/>
+        <BuffLevel  type="int"/>
+        <filterString/>
+        <TurnLast type="int"/>
+        <CardNum/>
+        <SecLast/>
+      </buffInfo>
+    </Effects>
+    
+    <TriggerOnDiscard type="bool"/>
+    <OverDueTurn type="int"/>
+    <IsConsume type="bool"/>
+    <UseTime type="int"/>
+    <maxUseAmountPerGame type="int"/>
+    
+    
+    
+    
+    <HasTurnEffect type="bool"/>
+    <TurnEffects type="class" MaxCount="3">
+      <type type="enum" etype="CardTurnEffectType"/>
+      <value/>
+    </TurnEffects>
+    <branchType type="enum" etype="BranchType"/>
+    <ExtraBranches type="class" MaxCount="2">
+      <condition/>
+      <BranchEffects type="class" MaxCount="3">
+        <effectType type="enum" etype="EffectType"/>
+        <Possibility/>
+        <effectString/>
+        <isAddBuff type="bool"/>
+        <buffInfo type="class" MaxCount="1">
+          <BuffType type="enum" etype="BuffType"/>
+          <BuffLevel type="int"/>
+          <filterString/>
+          <TurnLast type="int"/>
+          <CardNum/>
+          <SecLast/>
+        </buffInfo>
+      </BranchEffects>
+    </ExtraBranches>
+  </CardAsset>
 </root>

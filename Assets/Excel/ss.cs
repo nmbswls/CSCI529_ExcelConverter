@@ -12,6 +12,9 @@ using UnityEditor;
 public enum eExcelPropertyType
 {
     String,
+    Int,
+    Float,
+    Bool,
     Enum,
     Class,
 }
@@ -20,6 +23,7 @@ public class ExcelProperty
     public string ExcelName;
     public string AttrName;
     public eExcelPropertyType Type;
+    public string enumType;
 
     public ExcelProperty(string ExcelName, string AttrName, string typeString)
     {
@@ -100,7 +104,7 @@ public class ExcelReader
         List<JSONObject> ret = new List<JSONObject>();
 
 
-        List<ExcelProperty> properties = typeDict["c0"];
+        List<ExcelProperty> properties = typeDict["CardAsset"];
 
         for (int i = 1; i < rows; i++)
         {
@@ -155,8 +159,9 @@ public class ExcelReader
             eExcelPropertyType type = properties[i].Type;
             if (type == eExcelPropertyType.Enum)
             {
+
                 //jsonObject.AddField(properties[i].AttrName, dataRow[idx].ToString());
-                jsonObject.AddField(properties[i].AttrName, ObjEnumToIdx(keys[idx],dataRow[idx].ToString()));
+                jsonObject.AddField(properties[i].AttrName, ObjEnumToIdx(properties[i].enumType,dataRow[idx].ToString()));
                 idx++;
             }
             else if (type == eExcelPropertyType.Class)
@@ -168,26 +173,66 @@ public class ExcelReader
                 for (int j = 0; j < properties[i].MaxListCount; j++)
                 {
                     JSONObject oneObj = dfsReadExcel(properties[i].SubclassProperties, dataRow, ref idx);
-                    Debug.Log(oneObj.ToString());
+                    if (oneObj.ToString() == "{}")
+                    {
+                        Debug.Log("空"+ properties[i].AttrName + " "+i);
+                    }
                     jsonObject.GetField(properties[i].AttrName).Add(oneObj);
                 }
             }
+            else if (type == eExcelPropertyType.Bool)
+            {
+                //jsonObject.AddField(properties[i].AttrName, dataRow[idx].ToString());
+                string ret = "False";
+                if(dataRow[idx].ToString() == "Y" || dataRow[idx].ToString() == "y")
+                {
+                    ret = "True";
+                }
+                jsonObject.AddField(properties[i].AttrName, ret);
+                idx++;
+            }
+            else if(type==eExcelPropertyType.Int)
+            {
+                if (dataRow[idx].ToString() != "")
+                {
+                    jsonObject.AddField(properties[i].AttrName, int.Parse(dataRow[idx].ToString()));
+                }
+                idx++;
+            }
+            else if (type == eExcelPropertyType.Float)
+            {
+                if (dataRow[idx].ToString() != "")
+                {
+                    jsonObject.AddField(properties[i].AttrName, float.Parse(dataRow[idx].ToString()));
+                }
+                idx++;
+            }
             else
             {
-                jsonObject.AddField(properties[i].AttrName, dataRow[idx].ToString());
+                if(dataRow[idx].ToString() != "")
+                {
+                    jsonObject.AddField(properties[i].AttrName, dataRow[idx].ToString());
+                }
                 idx++;
             }
         }
-
         return jsonObject;
     }
 
 
     public int ObjEnumToIdx(string enumName, string value)
     {
+        if(value == null || value == "")
+        {
+            return 0;
+        }
         if (keywords.ContainsKey(enumName))
         {
             Dictionary<string, int> subDIct = keywords[enumName];
+            if (!subDIct.ContainsKey(value))
+            {
+                return 0;
+            }
             return subDIct[value];
         }
         return 0;
@@ -240,6 +285,12 @@ public class ExcelReader
                 np.MaxListCount = maxCount;
                 lep.Add(np);
             }
+            else if (type == "enum")
+            {
+                ExcelProperty ep = new ExcelProperty(ele.InnerXml, ele.Name, type);
+                ep.enumType = ele.GetAttribute("etype");
+                lep.Add(ep);
+            }
             else
             {
                 lep.Add(new ExcelProperty(ele.InnerXml, ele.Name, type));
@@ -256,7 +307,7 @@ public class ExcelReader
         {
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.Load(filePath);
-            XmlNodeList rootNodes = xmlDoc.ChildNodes;
+            XmlNodeList rootNodes = xmlDoc.SelectSingleNode("root").ChildNodes;
 
             foreach (XmlNode node in rootNodes)
             {
